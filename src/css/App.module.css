@@ -8,3 +8,9 @@
 .panel {
     flex: 1;
 }
+
+.canvas {
+    width: 200px;
+    height: 100%;
+    background: gray;
+}
