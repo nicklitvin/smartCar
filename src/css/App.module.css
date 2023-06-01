@@ -7,10 +7,13 @@
 
 .panel {
     flex: 1;
+    background-color: var(--background);
+    display: flex;
+    justify-content: center;
 }
 
 .canvas {
-    width: 200px;
-    height: 100%;
+    width: 300px;
+    height: 100vh;
     background: gray;
 }

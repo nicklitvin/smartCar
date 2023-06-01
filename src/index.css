@@ -2,3 +2,33 @@ html, body {
     margin: 0;
     padding: 0;
 }
+
+:root {
+    --background: #303437;
+    --black-text:  #000000;
+    --console: #1C1C1C;
+    --greyed-out: #D9D9D9;
+    --white-text: #FFFFFF;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+
+
+h1 {
+    color: var(--white-text);
+    text-align: center;
+    margin: 10px;
+    font-size: 48px;
+    font-weight: bold;
+}
+
+h3 {
+    color: var(--white-text);
+    margin: 2px;
+}
+
+p {
+    color: var(--white-text);
+    text-align: center;
+    margin: 2px;
+}

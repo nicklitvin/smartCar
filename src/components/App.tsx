@@ -30,10 +30,10 @@ export default function App() {
 
     return(
         <div className={styles.container}>
-            {/* <div className={styles.panel}>{LeftPanel()}</div> */}
+            <div className={styles.panel}>{LeftPanel()}</div>
             {createCanvas()}
-            <button onClick={createSimulation}>asd</button>
-            {/* <div className={styles.panel}>{rightPanel()}</div> */}
+            {/* <button onClick={createSimulation}>asd</button> */}
+            <div className={styles.panel}>{rightPanel()}</div>
         </div>
     )
 }
