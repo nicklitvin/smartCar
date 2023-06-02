@@ -42,7 +42,7 @@ ul {
 }
 
 li {
-    font-size: large;
+    font-size: 18px;
     font-weight: lighter;
     color: var(--white-text);
 }

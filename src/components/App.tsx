@@ -16,23 +16,16 @@ export default function App() {
     ];
     const [more, setMore] = useState<boolean>(false);
     const [detail, setDetail] = useState<boolean>(false);
-    const [simulation, setSimulation] = 
-        useState<Simulation | null>(null);
+    const [simulation, setSimulation] = useState<Simulation | null>(null);
+    const [consoleText, setConsoleText] = useState<String>();
+    const [consoleLoad, setConsoleLoad] = useState<Boolean>();
 
-    React.useEffect( () => {
+    const startSimulation = () => {
         const canvas = document.getElementById(canvasName) as HTMLCanvasElement;
         const simulation = new Simulation(false,canvas);
         setSimulation(simulation);
-    }, [])
-
-    const startSimulation = () => {
-        if (simulation) {
-            simulation.start();
-        } else {
-            const canvas = document.getElementById(canvasName) as HTMLCanvasElement;
-            const curr = new Simulation(false,canvas);
-            setSimulation(curr);
-        }
+        Simulation.initializeReact(setConsoleText,setConsoleLoad);
+        simulation.start();
     }
 
     const eraseData = () => {
@@ -47,12 +40,15 @@ export default function App() {
         }
     }
 
-    const startAgain = () => {
-        Simulation.startAgain();
+    const refreshPage = () => {
+        window.location.reload();
     }
 
     const speedRun = () => {
         const canvas = document.getElementById(canvasName) as HTMLCanvasElement;
+        const simulation = new Simulation(true,canvas);
+        setSimulation(simulation);
+        Simulation.initializeReact(setConsoleText,setConsoleLoad);
         Simulation.speedBrainDevelopment(canvas);
     }
 
@@ -70,6 +66,25 @@ export default function App() {
 
     const changeMore = () => {
         setMore(!more);
+    }
+
+    const getConsoleText = () => {
+        let elements = [];
+
+        elements.push(
+            <p key="1">{consoleText}</p>
+        );
+        if (consoleLoad) {
+            elements.push(
+                <div key="2" className={styles.loading}></div>
+            );
+        }
+
+        return (
+            <div className={styles.consoleContent}>
+                {elements}
+            </div>
+        )
     }
 
     const InfoPanel = () => {
@@ -126,18 +141,18 @@ export default function App() {
                     <img src={info} alt="info" onClick={changeMore}></img>
                 </div>
                 <div className={styles.buttons}>
-                    <button onClick={startSimulation}>Start</button>
-                    <button onClick={eraseData}>Erase Data</button>
-                    <button onClick={newRoad}>New Road</button>
-                    <button onClick={startAgain}>Start Again</button>
-                    <button onClick={speedRun}>Fast Develop</button>
+                    <button onClick={startSimulation}>{buttonNames[0]}</button>
+                    <button onClick={eraseData}>{buttonNames[1]}</button>
+                    <button onClick={newRoad}>{buttonNames[2]}</button>
+                    <button onClick={refreshPage}>{buttonNames[3]}</button>
+                    <button onClick={speedRun}>{buttonNames[4]}</button>
                 </div>
                 <div className={styles.detail}>
                     {selectImg}
                     <p>Enable detailed output</p>
                 </div>
                 <div className={styles.console}>
-                    <p></p>
+                    {getConsoleText()}
                 </div>
             </div>
         )

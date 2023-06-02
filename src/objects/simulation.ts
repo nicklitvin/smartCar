@@ -2,6 +2,9 @@ import Car from "./car";
 import Road from "./road";
 import NeuralNetwork from "./neuralNetwork";
 import Border from "./border";
+
+import Messages from "./msg";
+
 /**
  * Simulation class creates a simulation where smart cars
  * controlled by a neural network make decisions to pass as
@@ -70,6 +73,10 @@ export default class Simulation {
     private road : Road;
     private mutationConstant : number;
 
+    public static isReact : boolean = false;
+    public static setConsoleText : Function;
+    public static setConsoleLoad : Function;
+
     constructor(isSpeedRun : boolean, canvas : HTMLCanvasElement) {
         this.isSpeedRun = isSpeedRun;
 
@@ -94,6 +101,19 @@ export default class Simulation {
 
         this.smartCars = this.generateSmartCars();
         this.dummyCars = this.generateDummyCars();
+    }
+
+    /**
+     * Enables the updating of console text and load image for front-end React
+     * given the set function for each variable.
+     * 
+     * @param setConsoleText 
+     * @param setConsoleLoad 
+     */
+    public static initializeReact(setConsoleText : Function, setConsoleLoad : Function) {
+        Simulation.isReact = true;
+        Simulation.setConsoleText = setConsoleText;
+        Simulation.setConsoleLoad = setConsoleLoad;
     }
 
     /**
@@ -197,11 +217,11 @@ export default class Simulation {
      * manually changing values.
      */
     public static destroyAll() : void {
-        console.log("destroying data");
-        setTimeout( () => {
-            localStorage.clear();
-            this.startAgain();
-        }, 1000)
+        localStorage.clear();
+        if (this.isReact) {
+            this.setConsoleText(Messages.destroyed);
+            this.setConsoleLoad(false);
+        }
     }
 
     /**
@@ -288,6 +308,7 @@ export default class Simulation {
             else if (this.restartOnFinish) {
                 Simulation.startAgain();
             }
+            this.timesUp = false;
         } else if (this.continuouslyRun && !this.isSpeedRun) {
             requestAnimationFrame(this.run.bind(this));
         }
@@ -364,6 +385,16 @@ export default class Simulation {
      * localstorage.
      */
     private saveBestBrain() : void {
+        if (Simulation.isReact) {
+            if (this.courseCompleted) {
+                Simulation.setConsoleText(Messages.completed);
+                Simulation.setConsoleLoad(false);
+            } else {
+                Simulation.setConsoleText(Messages.improved);
+                Simulation.setConsoleLoad(false);
+            }
+        }
+
         console.log("saving best brain");
         let bestBrain = JSON.stringify(this.smartCars[0].brain);
         let mutationConstant = this.mutationConstant * this.mutationShrink;
@@ -387,6 +418,11 @@ export default class Simulation {
      * constant and fails to localstorage.
      */
     private increaseMutationConstant() : void {
+        if (Simulation.isReact) {
+            Simulation.setConsoleText(Messages.noImprove);
+            Simulation.setConsoleLoad(false);
+        }
+
         console.log("not enough improvement, increasing mutation");
         let failCount = Number(
             localStorage.getItem(this.storageFailKey)
@@ -419,7 +455,7 @@ export default class Simulation {
      * Create and save a traffic arrangement to local storage.
      * Reset best score for next map.
      */
-    public newRoad(restart = true) : void {
+    public newRoad(restart = false) : void {
         this.createAndSaveDummyCars();
         localStorage.setItem(this.storageScoreKey,String(0));
         localStorage.setItem(
@@ -427,6 +463,10 @@ export default class Simulation {
             String(this.defaultMutationConstant)
         );
         console.log("new road created");
+        if (Simulation.isReact) {
+            Simulation.setConsoleText(Messages.newRoad);
+            Simulation.setConsoleLoad(false);
+        }
         if (restart) {
             setTimeout(() => Simulation.startAgain(), 1000);
         }
@@ -436,6 +476,10 @@ export default class Simulation {
      * Logs initial data.
      */
     private logStart() : void {
+        if (Simulation.isReact && !this.isSpeedRun) {
+            Simulation.setConsoleText(Messages.start);
+            Simulation.setConsoleLoad(true);
+        }
         console.log("==============")
         console.log("mutation constant: ", this.mutationConstant);
         console.log("previous best score: ", 
@@ -477,9 +521,14 @@ export default class Simulation {
      * 
      * @param canvas for proper visuals after development
      */
-    public static speedBrainDevelopment (
-        canvas : HTMLCanvasElement) : void 
+    public static async speedBrainDevelopment (
+        canvas : HTMLCanvasElement) 
     {
+        if (this.isReact) {
+            Simulation.setConsoleText(Messages.fastDevelop);
+            Simulation.setConsoleLoad(true);
+            await new Promise(resolve => setTimeout(resolve,0));
+        }
         let cycle = 0;
 
         while (cycle < Simulation.brainDevelopmentCycles) {
@@ -500,6 +549,14 @@ export default class Simulation {
         }
         console.log("fast develop complete");
         console.log(`courses completed: ${Simulation.speedCompletes}`)
+
+        if (this.isReact) {
+            Simulation.setConsoleText(
+                `Your Neural Network has completed ${Simulation.speedCompletes}
+                courses in ${Simulation.brainDevelopmentCycles} attempts`
+            );
+            Simulation.setConsoleLoad(false);
+        }
         Simulation.speedCompletes = 0;
     }
 
