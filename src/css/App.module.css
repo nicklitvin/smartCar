@@ -17,3 +17,53 @@
     height: 100vh;
     background: gray;
 }
+
+.rightPanelContainer {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 10%;
+    gap: 3%;
+}
+
+.title img {
+    width: auto;
+    height: 40%;
+}
+
+.buttons {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.buttons button {
+    border-radius: 45px;
+    width: 150px;
+    font-weight: bold;
+    font-size: 16px;
+    height: 60px;
+}
+
+
+.detail {
+    display: flex;
+    width: 100%;
+    justify-content: left;
+    align-items: center;
+}
+
+.detail img {
+    height: 40%;
+    width: auto;
+}
+
