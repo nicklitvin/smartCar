@@ -246,7 +246,7 @@ export default class Simulation {
         this.logStart();
         if (this.isSpeedRun) {
             while (this.speedRunsCounter < this.speedMaxRuns){
-                if (this.speedRunsCounter % this.speedProgressCheck == 0) {
+                if (this.speedRunsCounter % this.speedProgressCheck === 0) {
                     this.updateSimulationStatus();
                 }
                 if (this.timesUp) break;
@@ -277,7 +277,7 @@ export default class Simulation {
         let bestCar = this.smartCars[0];
 
         if (bestCar.carsPassed >= this.numDummyCars) {
-            console.log("Course complete, create new road");
+            // console.log("Course complete, create new road");
             this.courseCompleted = true;
             this.timesUp = true;
         } else if (
@@ -405,13 +405,13 @@ export default class Simulation {
         let previousMutation = this.mutationConstant;
         let resetMutation = false;
 
-        console.log("saving best brain");
+        // console.log("saving best brain");
         let bestBrain = JSON.stringify(this.smartCars[0].brain);
         let mutationConstant = this.mutationConstant * this.mutationShrink;
         if (mutationConstant < this.minMutationConstant) {
             mutationConstant = this.defaultMutationConstant;
             resetMutation = true;
-            console.log("mutation constant too low, reseting value");
+            // console.log("mutation constant too low, reseting value");
         }
 
         localStorage.setItem(this.storageBrainKey,bestBrain);
@@ -453,7 +453,7 @@ export default class Simulation {
      * constant and fails to localstorage.
      */
     private increaseMutationConstant() : void {
-        console.log("not enough improvement, increasing mutation");
+        // console.log("not enough improvement, increasing mutation");
         let previousBest = localStorage.getItem(this.storageScoreKey);
         let failCount = Number(
             localStorage.getItem(this.storageFailKey)
@@ -467,7 +467,7 @@ export default class Simulation {
             newConstant = this.defaultMutationConstant;
             failCount = -1;
             reset = true;
-            console.log("mutation constant too high, reseting value");
+            // console.log("mutation constant too high, reseting value");
         }
 
         localStorage.setItem(this.storageMutateKey,
@@ -508,7 +508,7 @@ export default class Simulation {
             this.storageMutateKey,
             String(this.defaultMutationConstant)
         );
-        console.log("new road created");
+        // console.log("new road created");
         if (Simulation.isReact) {
             Simulation.setConsoleText(Messages.newRoad());
             Simulation.setConsoleLoad(false);
@@ -528,28 +528,28 @@ export default class Simulation {
             Simulation.setConsoleLoad(true);
             Simulation.setConsoleDetail();
         }
-        console.log("==============")
-        console.log("mutation constant: ", this.mutationConstant);
-        console.log("previous best score: ", 
-            localStorage.getItem(this.storageScoreKey)
-        );
-        console.log("failure streak: ", 
-            localStorage.getItem(this.storageFailKey)
-        );
+        // console.log("==============")
+        // console.log("mutation constant: ", this.mutationConstant);
+        // console.log("previous best score: ", 
+        //     localStorage.getItem(this.storageScoreKey)
+        // );
+        // console.log("failure streak: ", 
+        //     localStorage.getItem(this.storageFailKey)
+        // );
     }
 
     /**
      * Logs results of simulation.
      */
     private logResults() : void {
-        console.log("new mutation constant: ", 
-            localStorage.getItem(this.storageMutateKey)
-        );
-        console.log("current best score: ", this.smartCars[0].score);
-        console.log("failure streak: ", 
-            localStorage.getItem(this.storageFailKey)
-        );
-        console.log("==============")
+        // console.log("new mutation constant: ", 
+        //     localStorage.getItem(this.storageMutateKey)
+        // );
+        // console.log("current best score: ", this.smartCars[0].score);
+        // console.log("failure streak: ", 
+        //     localStorage.getItem(this.storageFailKey)
+        // );
+        // console.log("==============")
     }
 
     /**
@@ -582,14 +582,14 @@ export default class Simulation {
                 await new Promise(resolve => setTimeout(resolve,0));
             }
 
-            console.log("CYCLE",cycle);
+            // console.log("CYCLE",cycle);
             let simulation = new Simulation(true,canvas);
-            if (cycle == 0 && !this.speedBruteForceRoad) simulation.newRoad(false); 
+            if (cycle === 0 && !this.speedBruteForceRoad) simulation.newRoad(false); 
             simulation.start();
             if (simulation.courseCompleted) {
                 Simulation.speedCompletes++;
                 if (Simulation.speedCompletes %
-                    simulation.completesToAddDifficulty == 0) 
+                    simulation.completesToAddDifficulty === 0) 
                 {
                     simulation.increaseDifficulty();
                 }
@@ -597,8 +597,8 @@ export default class Simulation {
             } 
             cycle++;
         }
-        console.log("fast develop complete");
-        console.log(`courses completed: ${Simulation.speedCompletes}`)
+        // console.log("fast develop complete");
+        // console.log(`courses completed: ${Simulation.speedCompletes}`)
 
         if (this.isReact) {
             Simulation.setConsoleText(
@@ -607,6 +607,7 @@ export default class Simulation {
                 )
             );
             Simulation.setConsoleLoad(false);
+            Simulation.setConsoleDetail();
         }
         Simulation.speedCompletes = 0;
     }
@@ -616,7 +617,7 @@ export default class Simulation {
      */
     private increaseDifficulty() : void {
         if (Simulation.speedCompletes %
-            this.completesToIncreaseRowFill == 0) 
+            this.completesToIncreaseRowFill === 0) 
         {
             let newFill = this.maxDummyRowFill + 1 / this.laneCount;
             if (newFill < 1) {

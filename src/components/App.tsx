@@ -27,7 +27,7 @@ export default function App() {
         setSimulation(y);
         Simulation.initializeReact(setConsoleText,setConsoleLoad, setConsoleDetail, detail);
         y.detectNetwork();
-    },[]);
+    }, []);
 
     const startSimulation = () => {
         const canvas = document.getElementById(canvasName) as HTMLCanvasElement;
@@ -93,8 +93,8 @@ export default function App() {
             for (let rowIndex in consoleDetail) {
                 let row = consoleDetail[rowIndex];
                 detailElements.push(
-                    <p key={rowIndex}>{row}</p>,
-                    <br></br>
+                    <p key={`p-${rowIndex}`}>{row}</p>,
+                    <br key={`br-${rowIndex}`}></br>
                 )
             }
         }
