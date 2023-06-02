@@ -76,17 +76,33 @@
     flex-grow: 1;
     border-radius: 45px;
     display: flex;
-    flex-direction: column;
-    
     justify-content: center;
     align-items: center;
 }
 
 .consoleContent {
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5%;
+}
+
+.consoleBasic {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 80%;
+    width: 100%;
+    gap: 2%;
+}
+
+.consoleDetail {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    width: 100%;
     gap: 2%;
 }
 
@@ -110,4 +126,6 @@
         transform: rotate(1turn);
     }
 }
+
+
 

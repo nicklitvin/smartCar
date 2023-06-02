@@ -18,13 +18,21 @@ export default function App() {
     const [detail, setDetail] = useState<boolean>(false);
     const [simulation, setSimulation] = useState<Simulation | null>(null);
     const [consoleText, setConsoleText] = useState<String>();
+    const [consoleDetail, setConsoleDetail] = useState<String[]>();
     const [consoleLoad, setConsoleLoad] = useState<Boolean>();
+
+    React.useEffect( () => {
+        const x = document.getElementById(canvasName) as HTMLCanvasElement;
+        const y = new Simulation(false,x);
+        setSimulation(y);
+        Simulation.initializeReact(setConsoleText,setConsoleLoad, setConsoleDetail, detail);
+    },[]);
 
     const startSimulation = () => {
         const canvas = document.getElementById(canvasName) as HTMLCanvasElement;
         const simulation = new Simulation(false,canvas);
         setSimulation(simulation);
-        Simulation.initializeReact(setConsoleText,setConsoleLoad);
+        Simulation.initializeReact(setConsoleText,setConsoleLoad, setConsoleDetail, detail);
         simulation.start();
     }
 
@@ -48,7 +56,7 @@ export default function App() {
         const canvas = document.getElementById(canvasName) as HTMLCanvasElement;
         const simulation = new Simulation(true,canvas);
         setSimulation(simulation);
-        Simulation.initializeReact(setConsoleText,setConsoleLoad);
+        Simulation.initializeReact(setConsoleText,setConsoleLoad,setConsoleDetail, detail);
         Simulation.speedBrainDevelopment(canvas);
     }
 
@@ -70,6 +78,7 @@ export default function App() {
 
     const getConsoleText = () => {
         let elements = [];
+        let detailElements = [];
 
         elements.push(
             <p key="1">{consoleText}</p>
@@ -79,11 +88,26 @@ export default function App() {
                 <div key="2" className={styles.loading}></div>
             );
         }
+        if (detail && consoleDetail) {
+            for (let rowIndex in consoleDetail) {
+                let row = consoleDetail[rowIndex];
+                detailElements.push(
+                    <p key={rowIndex}>{row}</p>,
+                    <br></br>
+                )
+            }
+        }
 
         return (
             <div className={styles.consoleContent}>
-                {elements}
+                <div className={styles.consoleBasic}>
+                    {elements}
+                </div>
+                <div className={styles.consoleDetail}>
+                    {detailElements}
+                </div>
             </div>
+            
         )
     }
 

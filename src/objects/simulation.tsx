@@ -76,6 +76,8 @@ export default class Simulation {
     public static isReact : boolean = false;
     public static setConsoleText : Function;
     public static setConsoleLoad : Function;
+    public static setConsoleDetail : Function;
+    public static detailedConsole : boolean;
 
     constructor(isSpeedRun : boolean, canvas : HTMLCanvasElement) {
         this.isSpeedRun = isSpeedRun;
@@ -110,10 +112,14 @@ export default class Simulation {
      * @param setConsoleText 
      * @param setConsoleLoad 
      */
-    public static initializeReact(setConsoleText : Function, setConsoleLoad : Function) {
+    public static initializeReact(setConsoleText : Function, setConsoleLoad : Function,
+        setConsoleDetail : Function, detailedConsole : boolean = false
+    ) {
         Simulation.isReact = true;
         Simulation.setConsoleText = setConsoleText;
         Simulation.setConsoleLoad = setConsoleLoad;
+        Simulation.detailedConsole = detailedConsole;
+        Simulation.setConsoleDetail = setConsoleDetail;
     }
 
     /**
@@ -219,8 +225,9 @@ export default class Simulation {
     public static destroyAll() : void {
         localStorage.clear();
         if (this.isReact) {
-            this.setConsoleText(Messages.destroyed);
+            this.setConsoleText(Messages.destroyed());
             this.setConsoleLoad(false);
+            this.setConsoleDetail();
         }
     }
 
@@ -385,21 +392,17 @@ export default class Simulation {
      * localstorage.
      */
     private saveBestBrain() : void {
-        if (Simulation.isReact) {
-            if (this.courseCompleted) {
-                Simulation.setConsoleText(Messages.completed);
-                Simulation.setConsoleLoad(false);
-            } else {
-                Simulation.setConsoleText(Messages.improved);
-                Simulation.setConsoleLoad(false);
-            }
-        }
+        let previousBest = localStorage.getItem(this.storageScoreKey);
+        let currBest = this.smartCars[0].score;
+        let previousMutation = this.mutationConstant;
+        let resetMutation = false;
 
         console.log("saving best brain");
         let bestBrain = JSON.stringify(this.smartCars[0].brain);
         let mutationConstant = this.mutationConstant * this.mutationShrink;
         if (mutationConstant < this.minMutationConstant) {
             mutationConstant = this.defaultMutationConstant;
+            resetMutation = true;
             console.log("mutation constant too low, reseting value");
         }
 
@@ -409,6 +412,30 @@ export default class Simulation {
             String(mutationConstant)
         );
         localStorage.setItem(this.storageFailKey,String(0));
+
+        if (Simulation.isReact) {
+            Simulation.setConsoleLoad(false);
+
+            if (this.courseCompleted) {
+                Simulation.setConsoleText(Messages.completed());
+
+                Simulation.detailedConsole ? 
+                    Simulation.setConsoleDetail( Messages.courseDetail(
+                        previousBest,currBest,previousMutation,mutationConstant,
+                        resetMutation, 0
+                    )) :
+                    Simulation.setConsoleDetail();
+            } else {
+                Simulation.setConsoleText(Messages.improved);
+                
+                Simulation.detailedConsole ? 
+                    Simulation.setConsoleDetail( Messages.courseDetail(
+                        previousBest,currBest,previousMutation,mutationConstant,
+                        resetMutation, 0
+                    )) :
+                    Simulation.setConsoleDetail();
+            }
+        }
     }
 
     /**
@@ -418,21 +445,20 @@ export default class Simulation {
      * constant and fails to localstorage.
      */
     private increaseMutationConstant() : void {
-        if (Simulation.isReact) {
-            Simulation.setConsoleText(Messages.noImprove);
-            Simulation.setConsoleLoad(false);
-        }
-
         console.log("not enough improvement, increasing mutation");
+        let previousBest = localStorage.getItem(this.storageScoreKey);
         let failCount = Number(
             localStorage.getItem(this.storageFailKey)
         );
+        let previousMutation= this.mutationConstant;
         let newConstant = this.mutationConstant * (
                 this.mutationGrowth ** failCount
         );
+        let reset = false;
         if (newConstant > this.maxMutationConstant) {
             newConstant = this.defaultMutationConstant;
             failCount = -1;
+            reset = true;
             console.log("mutation constant too high, reseting value");
         }
 
@@ -442,6 +468,18 @@ export default class Simulation {
         localStorage.setItem(this.storageFailKey,
             String(failCount + 1)
         );
+
+        if (Simulation.isReact) {
+            Simulation.setConsoleText(Messages.noImprove());
+            Simulation.setConsoleLoad(false);
+            Simulation.detailedConsole ? 
+                Simulation.setConsoleDetail( Messages.courseDetail(
+                    previousBest,this.smartCars[0].score,
+                    previousMutation, newConstant, reset,
+                    localStorage.getItem(this.storageFailKey)
+                )) :
+                Simulation.setConsoleDetail();
+        }
     }
 
     /**
@@ -464,8 +502,9 @@ export default class Simulation {
         );
         console.log("new road created");
         if (Simulation.isReact) {
-            Simulation.setConsoleText(Messages.newRoad);
+            Simulation.setConsoleText(Messages.newRoad());
             Simulation.setConsoleLoad(false);
+            Simulation.setConsoleDetail();
         }
         if (restart) {
             setTimeout(() => Simulation.startAgain(), 1000);
@@ -477,8 +516,9 @@ export default class Simulation {
      */
     private logStart() : void {
         if (Simulation.isReact && !this.isSpeedRun) {
-            Simulation.setConsoleText(Messages.start);
+            Simulation.setConsoleText(Messages.start());
             Simulation.setConsoleLoad(true);
+            Simulation.setConsoleDetail();
         }
         console.log("==============")
         console.log("mutation constant: ", this.mutationConstant);
@@ -524,14 +564,16 @@ export default class Simulation {
     public static async speedBrainDevelopment (
         canvas : HTMLCanvasElement) 
     {
-        if (this.isReact) {
-            Simulation.setConsoleText(Messages.fastDevelop);
-            Simulation.setConsoleLoad(true);
-            await new Promise(resolve => setTimeout(resolve,0));
-        }
         let cycle = 0;
 
         while (cycle < Simulation.brainDevelopmentCycles) {
+            if (this.isReact) {
+                Simulation.setConsoleText(Messages.fastDevelop(cycle,Simulation.brainDevelopmentCycles));
+                Simulation.setConsoleLoad(true);
+                Simulation.setConsoleDetail();
+                await new Promise(resolve => setTimeout(resolve,0));
+            }
+
             console.log("CYCLE",cycle);
             let simulation = new Simulation(true,canvas);
             if (cycle == 0 && !this.speedBruteForceRoad) simulation.newRoad(false); 
@@ -552,8 +594,9 @@ export default class Simulation {
 
         if (this.isReact) {
             Simulation.setConsoleText(
-                `Your Neural Network has completed ${Simulation.speedCompletes}
-                courses in ${Simulation.brainDevelopmentCycles} attempts`
+                Messages.fastCompleted(
+                    Simulation.speedCompletes, Simulation.brainDevelopmentCycles
+                )
             );
             Simulation.setConsoleLoad(false);
         }
