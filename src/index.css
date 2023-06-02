@@ -17,7 +17,7 @@ html, body {
 h1 {
     color: var(--white-text);
     text-align: center;
-    margin: 10px;
+    margin: 0;
     font-size: 48px;
     font-weight: bold;
 }
@@ -28,11 +28,25 @@ h2 {
 
 h3 {
     color: var(--white-text);
-    margin: 2px;
+    margin: 0;
 }
 
 p {
     color: var(--white-text);
     text-align: center;
-    margin: 2px;
+    margin: 0;
+}
+
+ul {
+    margin: 0;
+}
+
+li {
+    font-size: large;
+    font-weight: lighter;
+    color: var(--white-text);
+}
+
+a {
+    text-decoration: none;
 }
