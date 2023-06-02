@@ -25,7 +25,9 @@ const Messages : {[key : string] : Function} = {
     ,
     "fastCompleted" : (completes : number, attempts : number) => 
         `Your Neural Network has completed ${completes} courses
-        in ${attempts} attempts`
+        in ${attempts} attempts`,
+    "detected" : () => `Detected a saved Neural Network.`,
+    "undetected" : () => `Press start to create a new Neural Network.`
 }
 
 export default Messages;

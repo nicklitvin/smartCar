@@ -122,6 +122,14 @@ export default class Simulation {
         Simulation.setConsoleDetail = setConsoleDetail;
     }
 
+    public detectNetwork() {
+        if (localStorage.getItem(this.storageBrainKey)) {
+            Simulation.setConsoleText(Messages.detected);
+        } else {
+            Simulation.setConsoleText(Messages.undetected);
+        }
+    }
+
     /**
      * If brain stored in localstorage from previous session, cars are
      * generated with the same brain but mutated by a mutation constant.

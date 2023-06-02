@@ -26,6 +26,7 @@ export default function App() {
         const y = new Simulation(false,x);
         setSimulation(y);
         Simulation.initializeReact(setConsoleText,setConsoleLoad, setConsoleDetail, detail);
+        y.detectNetwork();
     },[]);
 
     const startSimulation = () => {
