@@ -26,6 +26,10 @@ img {
     gap: 5px;
 }
 
+.rowLink:hover {
+    filter: brightness(80%);
+}
+
 .title {
     display: flex;
     flex-direction: column;

@@ -41,6 +41,10 @@
     height: 40%;
 }
 
+.title img:hover {
+    filter: brightness(80%);
+}
+
 .buttons {
     display: inline-flex;
     flex-wrap: wrap;
@@ -55,8 +59,12 @@
     font-weight: bold;
     font-size: 16px;
     height: 60px;
+    border: none;
 }
 
+.buttons button:hover {
+    filter: brightness(80%);
+}
 
 .detail {
     display: flex;
@@ -69,6 +77,10 @@
 .detail img {
     height: 40%;
     width: auto;
+}
+
+.detail img:hover {
+    filter: brightness(80%);
 }
 
 .console {

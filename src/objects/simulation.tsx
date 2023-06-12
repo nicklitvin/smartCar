@@ -50,7 +50,7 @@ export default class Simulation {
 
     // adjustable values
     private startLane = 1;
-    private dummyYSeperation = 200;
+    private dummyYSeperation = 300;
     private maxDummyRowFill = 0.4;
     private speedMaxRuns = 60*40;
     private laneCount = 3;
