@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/smartCar/static/css/main.2af44e66.css",
-    "main.js": "/smartCar/static/js/main.6183ebf3.js",
+    "main.css": "/smartCar/static/css/main.06ca2285.css",
+    "main.js": "/smartCar/static/js/main.f58eef2b.js",
     "index.html": "/smartCar/index.html",
-    "main.2af44e66.css.map": "/smartCar/static/css/main.2af44e66.css.map",
-    "main.6183ebf3.js.map": "/smartCar/static/js/main.6183ebf3.js.map"
+    "main.06ca2285.css.map": "/smartCar/static/css/main.06ca2285.css.map",
+    "main.f58eef2b.js.map": "/smartCar/static/js/main.f58eef2b.js.map"
   },
   "entrypoints": [
-    "static/css/main.2af44e66.css",
-    "static/js/main.6183ebf3.js"
+    "static/css/main.06ca2285.css",
+    "static/js/main.f58eef2b.js"
   ]
 }
